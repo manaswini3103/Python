@@ -57,8 +57,24 @@ skills:
 
 ### Parsing in YAML
 - Python does not have built-in YAML support. The PyYAML library is commonly used for this purpose.
-- Use yaml.safe_load() to convert a YAML string into a Python dictionary or list.
-- safe_load() is recommended for security reasons when dealing with untrusted sources.
+- We mostly use yaml.safe_load() to convert a YAML string into a Python dictionary or list.
+
+#### Methods
+**1.load()**
+- Loads YAML with no security restrictions.
+- Can execute arbitrary Python objects, which may lead to code execution vulnerabilities if the YAML content is untrusted.
+- The Loader parameter of the load() function is set to SafeLoader.
+**example**
+```python
+import yaml
+with open('geeksforgeeks.yml', 'r') as f:
+    data = yaml.load(f, Loader=yaml.SafeLoader)
+    
+# Print the values as a dictionary
+print(data)
+```
+**2.safe_load()**
+- It is recommended for security reasons when dealing with untrusted sources.
 **eample**
 ```python
 import yaml
@@ -69,3 +85,33 @@ age: 25
 """)
 print(data["name"])
 ```
+**3.full_load()**
+- The yaml.full_load() function is used to parse the content of the YAML file in the form of key-value pairs.
+- Then using the Python get() method, we can get specific data from the YAML file.
+**example**
+```python
+import yaml
+with open('geeksforgeeks.yml', 'r') as f:
+    data = yaml.full_load(f)
+    
+# Print the values as a dictionary
+output = {
+    'UserName': data.get('UserName'),
+    'Password': data.get('Password'),
+    'phone': data.get('Phone'),
+    'Skills': ' '.join(data.get('Skills', []))
+}
+
+print(output)
+```
+**4.load_all()**
+-The load_all() method is used when we want to load multiple YAML documents present in a single file.
+**example**
+```python
+import yaml
+
+with open('multiple_documents.yml', 'r') as f:
+    yaml_data = list(yaml.safe_load_all(f))
+    print(yaml_data)
+```
+
